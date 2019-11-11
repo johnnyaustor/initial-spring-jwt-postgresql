@@ -1,8 +1,10 @@
 # initial-spring-jwt-postgresql
-initial spring jwt authentication with db postgresql
+initial spring jwt authentication with db postgresql, sudah disertakan sql di folder db,
 
-/api/auth/login
+contoh route controller:
 
-/api/auth/register
+`localhost:8080/api/auth/register`
 
-/api/users
+`localhost:8080/api/auth/login`
+
+`localhost:8080/api/users`, `localhost:8080/api/users?email=john,fullName=john` 
