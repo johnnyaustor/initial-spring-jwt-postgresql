@@ -14,23 +14,37 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
-    public final ResponseEntity<?> handleException(UserCreateException ex, WebRequest request) {
-        return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
     public final ResponseEntity<?> handleAppException(AppException ex) {
-        return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(apiResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler
     public final ResponseEntity<?> handleBadRequestException(BadRequestException ex) {
-        return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse(HttpStatus.BAD_REQUEST, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public final ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex) {
-        return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiResponse(HttpStatus.NOT_FOUND, ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<?> handleAuthException(AuthException ex) {
+        return new ResponseEntity<>(apiResponse(HttpStatus.UNAUTHORIZED, ex.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<?> handleException(EntityExeption ex, WebRequest request) {
+        return new ResponseEntity<>(apiResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<?> handleArgumentException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(apiResponse(HttpStatus.BAD_REQUEST, ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    private ApiResponse apiResponse(HttpStatus httpStatus, String message) {
+        return new ApiResponse(httpStatus.value(), message, false);
     }
 
 }

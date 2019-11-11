@@ -1,11 +1,14 @@
 package com.jap.initial.springjwt.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -17,9 +20,12 @@ public class Users implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "fullName is required")
+    @Max(50)
     private String fullName;
     @Email(message = "email needs to be an correct email")
     @NotBlank(message = "email is required")
+    @Min(6)
+    @Max(100)
     @Column(unique = true)
     private String email;
     @NotBlank(message = "phone is required")
@@ -46,6 +52,7 @@ public class Users implements UserDetails {
     public String getPhone() {
         return phone;
     }
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -68,6 +75,7 @@ public class Users implements UserDetails {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+    @JsonProperty("password")
     public void setPassword(String password) {
         this.password = password;
     }

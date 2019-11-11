@@ -1,11 +1,11 @@
 package com.jap.initial.springjwt.contoller;
 
+import com.jap.initial.springjwt.payload.ApiResponse;
 import com.jap.initial.springjwt.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -16,7 +16,12 @@ public class UsersController {
     private UsersService usersService;
 
     @GetMapping("")
-    public Iterable<?> getAll() {
-        return usersService.findAllUsers();
+    public ApiResponse getAll(@RequestParam Map<String, String> params) {
+        return new ApiResponse(usersService.findByCriteria(params));
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse getById(@PathVariable Long id) {
+        return new ApiResponse(usersService.findById(id));
     }
 }

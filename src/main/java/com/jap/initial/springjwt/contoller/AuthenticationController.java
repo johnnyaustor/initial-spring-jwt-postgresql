@@ -1,5 +1,6 @@
 package com.jap.initial.springjwt.contoller;
 
+import com.jap.initial.springjwt.payload.ApiResponse;
 import com.jap.initial.springjwt.payload.LoginRequest;
 import com.jap.initial.springjwt.payload.JwtAuthResponse;
 import com.jap.initial.springjwt.model.Users;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -59,6 +61,6 @@ public class AuthenticationController {
         if (errorMap != null) return errorMap;
 
         Users newUser = usersService.saveUser(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse(HttpStatus.CREATED, newUser), HttpStatus.CREATED);
     }
 }

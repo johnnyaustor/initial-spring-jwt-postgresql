@@ -1,4 +1,4 @@
-package com.jap.initial.springjwt.exceptions;
+package com.jap.initial.springjwt.payload;
 
 public class LoginInvalidResponse {
     private String email;

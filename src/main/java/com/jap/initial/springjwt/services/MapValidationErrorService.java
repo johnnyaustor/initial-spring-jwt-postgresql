@@ -1,5 +1,6 @@
 package com.jap.initial.springjwt.services;
 
+import com.jap.initial.springjwt.payload.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class MapValidationErrorService {
             for (FieldError error: result.getFieldErrors()) {
                 errorMap.put(error.getField(), error.getDefaultMessage());
             }
-            return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(HttpStatus.BAD_REQUEST, errorMap), HttpStatus.BAD_REQUEST);
         }
         return null;
     }
