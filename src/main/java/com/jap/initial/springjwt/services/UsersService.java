@@ -4,6 +4,8 @@ import com.jap.initial.springjwt.exceptions.EntityExeption;
 import com.jap.initial.springjwt.model.Users;
 import com.jap.initial.springjwt.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,5 +63,13 @@ public class UsersService {
 
     public Users findById(Long id) {
         return usersRepository.getById(id);
+    }
+
+    public List<Users> findAllByCriteria(String criteria) {
+        return usersRepository.findByFullNameContainsOrEmailContainsOrPhoneContainsOrPasswordContains(criteria, criteria, criteria, criteria);
+    }
+
+    public Page<Users> findAll(Pageable pageable) {
+        return usersRepository.findAll(pageable);
     }
 }
