@@ -1,44 +1,59 @@
 package com.jap.initial.springjwt.payload;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
 
+import java.sql.Timestamp;
+
 public class MetaResponse {
+    @JsonIgnore
+    private HttpStatus httpStatus;
     private boolean success;
+    private Timestamp timestamp;
     private Integer http_status;
     private String message;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object errors;
+    private Object info;
 
     public MetaResponse() {
-        this.http_status = HttpStatus.OK.value();
-        this.message = HttpStatus.OK.getReasonPhrase();
-        this.success = true;
+        this(HttpStatus.OK);
     }
 
     public MetaResponse(Object errors) {
-        this.errors = errors;
-        this.http_status = HttpStatus.BAD_REQUEST.value();
-        this.message = HttpStatus.BAD_REQUEST.getReasonPhrase();
-        this.success = false;
+        this(HttpStatus.BAD_REQUEST, errors);
+    }
+
+    public MetaResponse(HttpStatus httpStatus) {
+        this(httpStatus, httpStatus.getReasonPhrase());
     }
 
     public MetaResponse(HttpStatus httpStatus, Object errors) {
-        this.errors = errors;
+        this(httpStatus, httpStatus.getReasonPhrase(), errors);
+    }
+
+    public MetaResponse(HttpStatus httpStatus, String message) {
+        this(httpStatus, message, null);
+    }
+
+    public MetaResponse(HttpStatus httpStatus, String message, Object errors) {
+        this.httpStatus = httpStatus;
         this.http_status = httpStatus.value();
-        this.message = httpStatus.getReasonPhrase();
-        this.success = false;
-    }
-
-    public MetaResponse(Integer http_status, String message, boolean success, Object errors) {
-        this.http_status = http_status;
         this.message = message;
-        this.success = success;
+        this.setSucces(httpStatus);
         this.errors = errors;
+        this.timestamp = new Timestamp(System.currentTimeMillis());
+    }
+
+    private void setSucces(HttpStatus httpStatus) {
+        this.success = httpStatus.value() >= 200 && httpStatus.value() < 300;
     }
 
 
-
-
-
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
     public Integer getHttp_status() {
         return http_status;
     }
@@ -51,7 +66,16 @@ public class MetaResponse {
     public Object getErrors() {
         return errors;
     }
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+    public Object getInfo() {
+        return info;
+    }
 
+    public void setHttpStatus(HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
+    }
     public void setHttp_status(Integer http_status) {
         this.http_status = http_status;
     }
@@ -63,5 +87,11 @@ public class MetaResponse {
     }
     public void setErrors(Object errors) {
         this.errors = errors;
+    }
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+    public void setInfo(Object o) {
+        this.info = o;
     }
 }

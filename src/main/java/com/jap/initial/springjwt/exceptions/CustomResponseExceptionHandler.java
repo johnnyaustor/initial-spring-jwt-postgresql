@@ -44,7 +44,7 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
     }
 
     private ApiResponse apiResponse(HttpStatus httpStatus, String message) {
-        return new ApiResponse(httpStatus.value(), message, false);
+        return new ApiResponse(httpStatus, message);
     }
 
 }

@@ -1,8 +1,11 @@
 package com.jap.initial.springjwt.contoller;
 
+import com.jap.initial.springjwt.model.Users;
 import com.jap.initial.springjwt.payload.ApiResponse;
+import com.jap.initial.springjwt.payload.MetaInfoResponse;
 import com.jap.initial.springjwt.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +36,7 @@ public class UsersController {
 
     @GetMapping("/page")
     public ApiResponse getAll(Pageable pageable) {
-        return new ApiResponse(usersService.findAll(pageable));
+        Page<Users> users = usersService.findAll(pageable);
+        return new ApiResponse(users.getContent()).setMetaInfo(new MetaInfoResponse(users));
     }
 }

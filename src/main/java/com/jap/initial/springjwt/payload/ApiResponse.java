@@ -11,38 +11,39 @@ public class ApiResponse {
         this.meta = new MetaResponse();
     }
 
+    public ApiResponse(HttpStatus httpStatus) {
+        this(httpStatus, httpStatus.getReasonPhrase());
+    }
+
     public ApiResponse(HttpStatus httpStatus, Object object) {
-        this.setApiResponse(httpStatus.value(), httpStatus.getReasonPhrase(), object);
+        this(httpStatus, httpStatus.getReasonPhrase(), object);
     }
 
-    public ApiResponse(int http_status, String message) {
-        this.setApiResponse(http_status, message, null);
+    public ApiResponse(HttpStatus httpStatus, String message) {
+        this(httpStatus, message, null);
     }
 
-    public ApiResponse(int http_status, String message, boolean success) {
-        this(http_status, message, success, null);
-    }
-
-    public ApiResponse(int http_status, String message, boolean success, Object errors) {
-        this.meta = setMetaResponse(http_status, message, success, errors);
-    }
-
-    private void setApiResponse(int http_status, String message, Object object) {
-        if (http_status >=200 && http_status < 300) {
+    public ApiResponse(HttpStatus httpStatus, String message, Object object) {
+        if (isResponseOk(httpStatus)) {
             this.data = object;
-            this.meta = new MetaResponse();
+            this.meta = new MetaResponse(httpStatus);
         } else {
             this.data = null;
-            this.meta = setMetaResponse(http_status, message, false, object);
+            this.meta = new MetaResponse(httpStatus, message, object);
         }
     }
 
-    private MetaResponse setMetaResponse(int http_status, String message, boolean success, Object errors) {
-        return new MetaResponse(http_status, message, success, errors);
+    private boolean isResponseOk(HttpStatus httpStatus) {
+        return httpStatus.value() >= 200 && httpStatus.value() < 300;
     }
 
     public ApiResponse setData(Object data) {
         this.data = data;
+        return this;
+    }
+
+    public ApiResponse setMetaInfo(Object o) {
+        this.meta.setInfo(o);
         return this;
     }
 
