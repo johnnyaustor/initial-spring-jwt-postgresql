@@ -1,0 +1,1 @@
+web: java $JAVA_OPTS -jar target/spring-jwt-0.1.jar -Dserver.port=$PORT $JAR_OPTS

@@ -14,18 +14,16 @@ import java.sql.Timestamp;
 import java.util.Collection;
 
 @Entity
+@Table(name = "users")
 public class Users implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "fullName is required")
-    @Max(50)
     private String fullName;
     @Email(message = "email needs to be an correct email")
     @NotBlank(message = "email is required")
-    @Min(6)
-    @Max(100)
     @Column(unique = true)
     private String email;
     @NotBlank(message = "phone is required")
