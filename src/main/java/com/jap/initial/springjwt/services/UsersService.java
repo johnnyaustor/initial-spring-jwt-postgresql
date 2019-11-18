@@ -1,7 +1,10 @@
 package com.jap.initial.springjwt.services;
 
+import com.jap.initial.springjwt.exceptions.AppException;
 import com.jap.initial.springjwt.exceptions.EntityExeption;
+import com.jap.initial.springjwt.exceptions.ResourceNotFoundException;
 import com.jap.initial.springjwt.model.Users;
+import com.jap.initial.springjwt.payload.ChangePasswordRequest;
 import com.jap.initial.springjwt.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,12 +37,35 @@ public class UsersService {
         return usersRepository.findAll();
     }
 
-    public Users saveUser(Users newUser) {
+    public Users saveUser(Users newUsers) {
         try {
-            newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
-            return usersRepository.save(newUser);
+            if (newUsers.getId() == null) {
+                newUsers.setPassword(bCryptPasswordEncoder.encode(newUsers.getPassword()));
+            } else {
+                Users oldUsers = findById(newUsers.getId());
+                newUsers.setPassword(oldUsers.getPassword());
+                newUsers.setCreateAt(oldUsers.getCreateAt());
+            }
+
+            return usersRepository.save(newUsers);
         } catch (Exception ex) {
             throw new EntityExeption("Cannot Create user: " + ex.getMessage());
+        }
+    }
+
+    public boolean changePassword(ChangePasswordRequest changePasswordRequest) {
+        Users users = usersRepository.findByEmail(changePasswordRequest.getEmail());
+        if (users == null) throw new ResourceNotFoundException("Users", "email", changePasswordRequest.getEmail());
+
+        if (!bCryptPasswordEncoder.matches(changePasswordRequest.getOldPassword(), users.getPassword()))
+            throw new EntityExeption("Old Password not match");
+
+        try {
+            users.setPassword(bCryptPasswordEncoder.encode(changePasswordRequest.getNewPassword()));
+            return usersRepository.save(users) != null;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new AppException(ex.getMessage(), ex);
         }
     }
 
@@ -62,7 +88,10 @@ public class UsersService {
     }
 
     public Users findById(Long id) {
-        return usersRepository.getById(id);
+        Users users = usersRepository.getById(id);
+        if (users == null)
+            throw new ResourceNotFoundException("Users", "id", id);
+        return users;
     }
 
     public List<Users> findAllByCriteria(String criteria) {

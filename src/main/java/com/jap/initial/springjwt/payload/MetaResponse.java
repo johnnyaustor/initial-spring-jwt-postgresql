@@ -1,3 +1,4 @@
+/* by JAPBuilder */
 package com.jap.initial.springjwt.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

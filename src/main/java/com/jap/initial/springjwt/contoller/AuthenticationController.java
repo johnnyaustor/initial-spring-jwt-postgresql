@@ -1,9 +1,8 @@
 package com.jap.initial.springjwt.contoller;
 
-import com.jap.initial.springjwt.payload.ApiResponse;
-import com.jap.initial.springjwt.payload.LoginRequest;
-import com.jap.initial.springjwt.payload.JwtAuthResponse;
+import com.jap.initial.springjwt.exceptions.BadRequestException;
 import com.jap.initial.springjwt.model.Users;
+import com.jap.initial.springjwt.payload.*;
 import com.jap.initial.springjwt.security.JwtTokenProvider;
 import com.jap.initial.springjwt.services.MapValidationErrorService;
 import com.jap.initial.springjwt.services.UsersService;
@@ -15,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -60,7 +58,17 @@ public class AuthenticationController {
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
         if (errorMap != null) return errorMap;
 
+        if (user.getPassword() == null) return mapValidationErrorService.passwordRequired("password");
+
         Users newUser = usersService.saveUser(user);
         return new ResponseEntity<>(new ApiResponse(HttpStatus.CREATED, newUser), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest passwordRequest, BindingResult result) {
+        ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+        if (errorMap != null) return errorMap;
+
+        return usersService.changePassword(passwordRequest) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

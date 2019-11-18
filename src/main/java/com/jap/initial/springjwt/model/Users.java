@@ -7,9 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -20,18 +19,18 @@ public class Users implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "fullName is required")
-    @Max(50)
+    @Size(max = 20)
     private String fullName;
     @Email(message = "email needs to be an correct email")
     @NotBlank(message = "email is required")
-    @Min(6)
-    @Max(100)
     @Column(unique = true)
+    @Size(min = 6, max = 100)
     private String email;
     @NotBlank(message = "phone is required")
     @Column(unique = true)
+    @Size(max = 20)
     private String phone;
-    @NotBlank(message = "password is required")
+//    @NotBlank(message = "password is required")
     private String password;
 
     private Timestamp createAt;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,5 +24,11 @@ public class MapValidationErrorService {
             return new ResponseEntity<>(new ApiResponse(HttpStatus.BAD_REQUEST, errorMap), HttpStatus.BAD_REQUEST);
         }
         return null;
+    }
+
+    public ResponseEntity<?> passwordRequired(String field) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put(field, "required");
+        return new ResponseEntity<>(new ApiResponse(HttpStatus.BAD_REQUEST, errorMap), HttpStatus.BAD_REQUEST);
     }
 }

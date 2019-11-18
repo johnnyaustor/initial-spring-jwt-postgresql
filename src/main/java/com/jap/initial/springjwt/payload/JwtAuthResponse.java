@@ -1,3 +1,4 @@
+/* by JAPBuilder */
 package com.jap.initial.springjwt.payload;
 
 public class JwtAuthResponse {
