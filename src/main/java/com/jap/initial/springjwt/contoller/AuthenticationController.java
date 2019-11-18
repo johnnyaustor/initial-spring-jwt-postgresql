@@ -20,7 +20,7 @@ import javax.validation.Valid;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthenticationController {
 
     @Autowired
