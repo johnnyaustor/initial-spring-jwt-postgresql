@@ -1,8 +1,10 @@
 package com.jap.initial.springjwt.contoller;
 
-import com.jap.initial.springjwt.exceptions.BadRequestException;
 import com.jap.initial.springjwt.model.Users;
-import com.jap.initial.springjwt.payload.*;
+import com.jap.initial.springjwt.payload.ApiResponse;
+import com.jap.initial.springjwt.payload.ChangePasswordRequest;
+import com.jap.initial.springjwt.payload.JwtAuthResponse;
+import com.jap.initial.springjwt.payload.LoginRequest;
 import com.jap.initial.springjwt.security.JwtTokenProvider;
 import com.jap.initial.springjwt.services.MapValidationErrorService;
 import com.jap.initial.springjwt.services.UsersService;
@@ -23,17 +25,18 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final MapValidationErrorService mapValidationErrorService;
+    private final UsersService usersService;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private MapValidationErrorService mapValidationErrorService;
-
-    @Autowired
-    private UsersService usersService;
+    public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, MapValidationErrorService mapValidationErrorService, UsersService usersService) {
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.mapValidationErrorService = mapValidationErrorService;
+        this.usersService = usersService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {

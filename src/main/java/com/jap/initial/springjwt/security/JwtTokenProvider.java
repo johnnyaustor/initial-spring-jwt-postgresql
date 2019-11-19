@@ -42,7 +42,7 @@ public class JwtTokenProvider {
 
     }
 
-    public boolean validateToken(String token) {
+    boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
@@ -61,7 +61,7 @@ public class JwtTokenProvider {
     }
 
     // Get user id by token
-    public Long getUserIdFromJwt(String token) {
+    Long getUserIdFromJwt(String token) {
         Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
         String id = (String) claims.get("id");
         return Long.parseLong(id);

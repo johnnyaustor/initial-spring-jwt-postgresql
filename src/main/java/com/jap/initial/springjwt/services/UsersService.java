@@ -24,17 +24,15 @@ import java.util.Map;
 @Service
 public class UsersService {
 
-    @Autowired
-    private UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final EntityManager em;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    private EntityManager em;
-
-    public Iterable<Users> findAllUsers() {
-        return usersRepository.findAll();
+    public UsersService(UsersRepository usersRepository, BCryptPasswordEncoder bCryptPasswordEncoder, EntityManager em) {
+        this.usersRepository = usersRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.em = em;
     }
 
     public Users saveUser(Users newUsers) {
@@ -69,22 +67,13 @@ public class UsersService {
         }
     }
 
-    public List<?> findByCriteria(Map<String, String> params) throws IllegalArgumentException {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        final CriteriaQuery<?> query = cb.createQuery(Users.class);
-        final Root<?> user = query.from(Users.class);
-        List<Predicate> predicates = new ArrayList<>();
+    public void delete(Long id) {
+        Users oldUsers = findById(id);
+        usersRepository.delete(oldUsers);
+    }
 
-        for (String key: params.keySet()) {
-            String value = params.get(key);
-            if (value != null || !value.isEmpty()) {
-                predicates.add(cb.like(cb.lower(user.get(key)), "%" + value.trim().toLowerCase() + "%"));
-            }
-        }
-
-        query.where(predicates.toArray(new Predicate[0]));
-
-        return em.createQuery(query).getResultList();
+    public List<Users> findAllUsers() {
+        return usersRepository.findAll();
     }
 
     public Users findById(Long id) {
@@ -101,4 +90,24 @@ public class UsersService {
     public Page<Users> findAll(Pageable pageable) {
         return usersRepository.findAll(pageable);
     }
+
+    public List<Users> findByCriteria(Map<String, String> params) throws IllegalArgumentException {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        final CriteriaQuery<Users> query = cb.createQuery(Users.class);
+        final Root<?> user = query.from(Users.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        for (String key: params.keySet()) {
+            String value = params.get(key);
+            if (value != null) {
+                predicates.add(cb.like(cb.lower(user.get(key)), "%" + value.trim().toLowerCase() + "%"));
+            }
+        }
+
+        query.where(predicates.toArray(new Predicate[0]));
+
+        return em.createQuery(query).getResultList();
+    }
+
+
 }

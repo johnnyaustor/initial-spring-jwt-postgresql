@@ -11,28 +11,47 @@ import java.sql.Timestamp;
 import java.util.Collection;
 
 @Entity
-@Table(name = "users")
+@Table(name = Users.TABLE)
 public class Users implements UserDetails {
+    static final String TABLE = "users";
+    private static final String _ID = "id";
+    private static final String _FULL_NAME = "full_name";
+    private static final String _EMAIL = "email";
+    private static final String _PHONE = "phone";
+    private static final String _PASSWORD = "password";
+    private static final String _CREATE_AT = "create_at";
+    private static final String _UPDATE_AT = "update_at";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = _ID)
+    @JsonProperty
     private Long id;
-    @NotBlank(message = "fullName is required")
+    @NotBlank
     @Size(max = 20)
+    @Column(name = _FULL_NAME)
+    @JsonProperty
     private String fullName;
-    @Email(message = "email needs to be an correct email")
-    @NotBlank(message = "email is required")
-    @Column(unique = true)
+    @Email
+    @NotBlank
     @Size(min = 6, max = 100)
+    @Column(name = _EMAIL, unique = true)
+    @JsonProperty
     private String email;
-    @NotBlank(message = "phone is required")
-    @Column(unique = true)
+    @NotBlank
     @Size(max = 20)
+    @Column(name = _PHONE, unique = true)
+    @JsonProperty
     private String phone;
-//    @NotBlank(message = "password is required")
+    @Column(name = _PASSWORD)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Column(name = _CREATE_AT)
+    @JsonProperty
     private Timestamp createAt;
+    @Column(name = _UPDATE_AT)
+    @JsonProperty
     private Timestamp updateAt;
 
     public Users() {
@@ -50,7 +69,6 @@ public class Users implements UserDetails {
     public String getPhone() {
         return phone;
     }
-    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -73,7 +91,6 @@ public class Users implements UserDetails {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    @JsonProperty("password")
     public void setPassword(String password) {
         this.password = password;
     }

@@ -21,11 +21,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String JWT_HEADER = "Authorization";
     private static final String JWT_TOKEN_PREFIX = "Bearer ";
 
-    @Autowired
-    private JwtTokenProvider tokenProvider;
+    private final JwtTokenProvider tokenProvider;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, CustomUserDetailsService customUserDetailsService) {
+        this.tokenProvider = tokenProvider;
+        this.customUserDetailsService = customUserDetailsService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {

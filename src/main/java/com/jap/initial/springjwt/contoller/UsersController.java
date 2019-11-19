@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,15 +22,19 @@ import java.util.Map;
 @CrossOrigin
 public class UsersController {
 
-    @Autowired
-    private UsersService usersService;
+    private final UsersService usersService;
+    private final MapValidationErrorService mapValidationErrorService;
 
     @Autowired
-    private MapValidationErrorService mapValidationErrorService;
+    public UsersController(UsersService usersService, MapValidationErrorService mapValidationErrorService) {
+        this.usersService = usersService;
+        this.mapValidationErrorService = mapValidationErrorService;
+    }
 
     @GetMapping("")
     public ApiResponse getAll(@RequestParam Map<String, String> params) {
-        return new ApiResponse(usersService.findByCriteria(params));
+        List<Users> users = params.isEmpty() ?  usersService.findAllUsers() : usersService.findByCriteria(params);
+        return new ApiResponse(users);
     }
 
     @GetMapping("/{id}")
@@ -56,5 +61,11 @@ public class UsersController {
         newUsers.setId(id);
         Users users = usersService.saveUser(newUsers);
         return new ResponseEntity<>(new ApiResponse(users), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        usersService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

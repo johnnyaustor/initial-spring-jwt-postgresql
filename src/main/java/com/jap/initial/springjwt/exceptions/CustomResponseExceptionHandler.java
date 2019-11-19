@@ -3,8 +3,10 @@ package com.jap.initial.springjwt.exceptions;
 import com.jap.initial.springjwt.payload.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -39,12 +41,11 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
     }
 
     @ExceptionHandler
-    public final ResponseEntity<?> handleArgumentException(IllegalArgumentException ex) {
+    public final ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex) {
         return new ResponseEntity<>(apiResponse(HttpStatus.BAD_REQUEST, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     private ApiResponse apiResponse(HttpStatus httpStatus, String message) {
         return new ApiResponse(httpStatus, message);
     }
-
 }
