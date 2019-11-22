@@ -30,7 +30,7 @@ public class Users implements UserDetails {
     @NotBlank
     @Size(max = 20)
     @Column(name = _FULL_NAME)
-    @JsonProperty
+    @JsonProperty(_FULL_NAME)
     private String fullName;
     @Email
     @NotBlank

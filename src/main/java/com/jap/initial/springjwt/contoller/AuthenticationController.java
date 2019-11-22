@@ -15,7 +15,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -39,10 +38,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
-        ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
-        if (errorMap != null) return errorMap;
-
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -57,10 +53,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody Users user, BindingResult result) {
-        ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
-        if (errorMap != null) return errorMap;
-
+    public ResponseEntity<?> register(@Valid @RequestBody Users user) {
         if (user.getPassword() == null) return mapValidationErrorService.passwordRequired("password");
 
         Users newUser = usersService.saveUser(user);
@@ -68,10 +61,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest passwordRequest, BindingResult result) {
-        ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
-        if (errorMap != null) return errorMap;
-
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest passwordRequest) {
         return usersService.changePassword(passwordRequest) ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

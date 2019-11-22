@@ -3,14 +3,12 @@ package com.jap.initial.springjwt.contoller;
 import com.jap.initial.springjwt.model.Users;
 import com.jap.initial.springjwt.payload.ApiResponse;
 import com.jap.initial.springjwt.payload.MetaInfoResponse;
-import com.jap.initial.springjwt.services.MapValidationErrorService;
 import com.jap.initial.springjwt.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,12 +21,10 @@ import java.util.Map;
 public class UsersController {
 
     private final UsersService usersService;
-    private final MapValidationErrorService mapValidationErrorService;
 
     @Autowired
-    public UsersController(UsersService usersService, MapValidationErrorService mapValidationErrorService) {
+    public UsersController(UsersService usersService) {
         this.usersService = usersService;
-        this.mapValidationErrorService = mapValidationErrorService;
     }
 
     @GetMapping("")
@@ -54,10 +50,7 @@ public class UsersController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> put(@Valid @RequestBody Users newUsers, BindingResult result, @PathVariable Long id) {
-        ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
-        if (errorMap != null) return errorMap;
-
+    public ResponseEntity<?> put(@Valid @RequestBody Users newUsers, @PathVariable Long id) {
         newUsers.setId(id);
         Users users = usersService.saveUser(newUsers);
         return new ResponseEntity<>(new ApiResponse(users), HttpStatus.OK);
@@ -67,5 +60,10 @@ public class UsersController {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         usersService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/annotation")
+    public ResponseEntity<?> annotation(@Valid @RequestBody Users users) {
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
