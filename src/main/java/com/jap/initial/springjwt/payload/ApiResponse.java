@@ -24,7 +24,7 @@ public class ApiResponse {
         this(httpStatus, message, null);
     }
 
-    public ApiResponse(HttpStatus httpStatus, String message, Object object) {
+    private ApiResponse(HttpStatus httpStatus, String message, Object object) {
         if (isResponseOk(httpStatus)) {
             this.data = object;
             this.meta = new MetaResponse(httpStatus);

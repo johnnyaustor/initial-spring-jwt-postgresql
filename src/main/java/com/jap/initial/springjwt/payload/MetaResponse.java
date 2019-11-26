@@ -18,7 +18,7 @@ public class MetaResponse {
     private Object errors;
     private Object info;
 
-    public MetaResponse() {
+    MetaResponse() {
         this(HttpStatus.OK);
     }
 
@@ -26,28 +26,28 @@ public class MetaResponse {
         this(HttpStatus.BAD_REQUEST, errors);
     }
 
-    public MetaResponse(HttpStatus httpStatus) {
+    MetaResponse(HttpStatus httpStatus) {
         this(httpStatus, httpStatus.getReasonPhrase());
     }
 
-    public MetaResponse(HttpStatus httpStatus, Object errors) {
+    private MetaResponse(HttpStatus httpStatus, Object errors) {
         this(httpStatus, httpStatus.getReasonPhrase(), errors);
     }
 
-    public MetaResponse(HttpStatus httpStatus, String message) {
+    private MetaResponse(HttpStatus httpStatus, String message) {
         this(httpStatus, message, null);
     }
 
-    public MetaResponse(HttpStatus httpStatus, String message, Object errors) {
+    MetaResponse(HttpStatus httpStatus, String message, Object errors) {
         this.httpStatus = httpStatus;
         this.http_status = httpStatus.value();
         this.message = message;
-        this.setSucces(httpStatus);
+        this.setSuccess(httpStatus);
         this.errors = errors;
         this.timestamp = new Timestamp(System.currentTimeMillis());
     }
 
-    private void setSucces(HttpStatus httpStatus) {
+    private void setSuccess(HttpStatus httpStatus) {
         this.success = httpStatus.value() >= 200 && httpStatus.value() < 300;
     }
 

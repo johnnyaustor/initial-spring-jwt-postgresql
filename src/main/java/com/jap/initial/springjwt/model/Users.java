@@ -2,6 +2,7 @@ package com.jap.initial.springjwt.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -31,17 +32,20 @@ public class Users implements UserDetails {
     @Size(max = 20)
     @Column(name = _FULL_NAME)
     @JsonProperty(_FULL_NAME)
+    @ApiModelProperty(required = true, notes = "not blank, max 20")
     private String fullName;
     @Email
     @NotBlank
     @Size(min = 6, max = 100)
     @Column(name = _EMAIL, unique = true)
     @JsonProperty
+    @ApiModelProperty(required = true, notes = "not blank, max 100, email, unique")
     private String email;
     @NotBlank
     @Size(max = 20)
     @Column(name = _PHONE, unique = true)
     @JsonProperty
+    @ApiModelProperty(required = true, notes = "not blank, max 20, unique")
     private String phone;
     @Column(name = _PASSWORD)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
